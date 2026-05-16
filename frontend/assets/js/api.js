@@ -1,7 +1,7 @@
 // API Configuration
 const API_BASE_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
     ? 'http://localhost:5000/api' 
-    : '/api';
+    : 'https://ssit-backend.onrender.com/api';
 
 const api = {
     async request(endpoint, options = {}) {
