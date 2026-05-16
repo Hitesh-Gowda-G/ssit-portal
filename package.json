@@ -1,0 +1,14 @@
+{
+  "name": "subject-registration-system",
+  "version": "1.0.0",
+  "description": "Full-stack Subject Registration System",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "install-backend": "test -d backend && (cd backend && npm install) || echo 'No backend folder found, skipping...'",
+    "postinstall": "npm run install-backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

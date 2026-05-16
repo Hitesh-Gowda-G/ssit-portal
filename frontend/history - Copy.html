@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | SSIT Portal</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo"><img src="assets/logo.png" alt="Logo"><span>SSIT Portal</span></div>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i><span>Dashboard</span></a></li>
+                <li class="nav-item"><a href="register-subjects.html" class="nav-link"><i class="fas fa-book-medical"></i><span>Register Subjects</span></a></li>
+                <li class="nav-item"><a href="my-subjects.html" class="nav-link"><i class="fas fa-book"></i><span>My Registered Subjects</span></a></li>
+                <li class="nav-item"><a href="history.html" class="nav-link active"><i class="fas fa-history"></i><span>History</span></a></li>
+                <li class="nav-item"><a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i><span>Profile</span></a></li>
+            </ul>
+            <div class="nav-item" style="margin-top: auto;">
+                <a href="#" class="nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+                <div class="page-title"><h2>Audit Trail</h2></div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <div class="user-info"><span id="userName">John Doe</span></div>
+                </div>
+            </header>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="controls-grid" style="width: 100%;">
+                        <input type="text" id="historySearch" class="form-input" placeholder="Search history...">
+                        <select id="actionFilter" class="form-input">
+                            <option value="">All Actions</option>
+                            <option value="Added">Added</option>
+                            <option value="Modified">Modified</option>
+                            <option value="Deleted">Deleted</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Subject Code</th>
+                                <th>Subject Name</th>
+                                <th>Action</th>
+                                <th>Old Value</th>
+                                <th>New Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.location.pathname.endsWith('history.html')) return;
+            const tbody = document.querySelector('#historyTable tbody');
+            const searchInput = document.getElementById('historySearch');
+            const actionFilter = document.getElementById('actionFilter');
+            
+            let allHistory = [];
+
+            const loadHistory = async () => {
+                try {
+                    allHistory = await api.get('/history');
+                    renderHistory();
+                } catch (e) { showToast(e.message, 'error'); }
+            };
+
+            const renderHistory = () => {
+                const search = searchInput.value.toLowerCase();
+                const filter = actionFilter.value;
+                
+                tbody.innerHTML = '';
+                allHistory
+                    .filter(item => {
+                        const matchesSearch = item.subject_name.toLowerCase().includes(search) || item.subject_code.toLowerCase().includes(search);
+                        const matchesFilter = filter ? item.action_type === filter : true;
+                        return matchesSearch && matchesFilter;
+                    })
+                    .forEach(item => {
+                        const row = document.createElement('tr');
+                        const date = new Date(item.created_at).toLocaleString();
+                        row.innerHTML = `
+                            <td>${date}</td>
+                            <td>${item.subject_code}</td>
+                            <td>${item.subject_name}</td>
+                            <td><span class="badge badge-${item.action_type.toLowerCase()}">${item.action_type}</span></td>
+                            <td>${item.old_value}</td>
+                            <td>${item.new_value}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+            };
+
+            searchInput.addEventListener('input', renderHistory);
+            actionFilter.addEventListener('change', renderHistory);
+            loadHistory();
+        });
+    </script>
+</body>
+</html>

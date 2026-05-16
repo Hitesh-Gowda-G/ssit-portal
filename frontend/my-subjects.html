@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Subjects | SSIT Portal</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo"><img src="assets/logo.png" alt="Logo"><span>SSIT Portal</span></div>
+            <ul class="nav-links">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i><span>Dashboard</span></a></li>
+                <li class="nav-item"><a href="register-subjects.html" class="nav-link"><i class="fas fa-book-medical"></i><span>Register Subjects</span></a></li>
+                <li class="nav-item"><a href="my-subjects.html" class="nav-link active"><i class="fas fa-book"></i><span>My Registered Subjects</span></a></li>
+                <li class="nav-item"><a href="history.html" class="nav-link"><i class="fas fa-history"></i><span>History</span></a></li>
+                <li class="nav-item"><a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i><span>Profile</span></a></li>
+            </ul>
+            <div class="nav-item" style="margin-top: auto;">
+                <a href="#" class="nav-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-nav">
+                <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
+                <div class="page-title"><h2>My Registered Subjects</h2></div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <div class="user-info"><span id="userName">John Doe</span></div>
+                </div>
+            </header>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table id="mySubjectsTable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Credits</th>
+                                <th>Schedule</th>
+                                <th>Semester</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Modal (Simple) -->
+    <div id="editModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; justify-content: center; align-items: center;">
+        <div class="card" style="width: 400px; padding: 2rem;">
+            <h3>Update Registration</h3>
+            <br>
+            <div class="form-group">
+                <label>Semester</label>
+                <select id="editSemester" class="form-input">
+                    <option value="Spring 2026">Spring 2026</option>
+                    <option value="Fall 2026">Fall 2026</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Academic Year</label>
+                <select id="editYear" class="form-input">
+                    <option value="2025-2026">2025-2026</option>
+                    <option value="2026-2027">2026-2027</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" id="saveEditBtn">Save</button>
+                <button class="btn" style="background: #e2e8f0;" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script>
+        // Inline script for simplicity or separate file
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.location.pathname.endsWith('my-subjects.html')) return;
+            const tbody = document.querySelector('#mySubjectsTable tbody');
+            
+            const loadMySubjects = async () => {
+                try {
+                    const data = await api.get('/subjects/registered');
+                    tbody.innerHTML = '';
+                    data.forEach(sub => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${sub.subject_code}</td>
+                            <td>${sub.subject_name}</td>
+                            <td>${sub.credits}</td>
+                            <td>${sub.schedule}</td>
+                            <td>${sub.semester}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm edit-btn" 
+                                    data-id="${sub.registration_id}" 
+                                    data-sem="${sub.semester}" 
+                                    data-year="${sub.academic_year}" 
+                                    style="width: auto; padding: 4px 8px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm delete-btn" 
+                                    data-id="${sub.registration_id}" 
+                                    style="width: auto; padding: 4px 8px; background: var(--danger); color: white;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    // Add Listeners
+                    document.querySelectorAll('.edit-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const b = e.target.closest('.edit-btn');
+                            openEdit(b.dataset.id, b.dataset.sem, b.dataset.year);
+                        });
+                    });
+
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            const b = e.target.closest('.delete-btn');
+                            handleDelete(b.dataset.id);
+                        });
+                    });
+                } catch (e) { showToast(e.message, 'error'); }
+            };
+
+            let currentRegId = null;
+            const openEdit = (id, sem, year) => {
+                currentRegId = id;
+                document.getElementById('editSemester').value = sem;
+                document.getElementById('editYear').value = year;
+                document.getElementById('editModal').style.display = 'flex';
+            };
+
+            document.getElementById('saveEditBtn').addEventListener('click', async () => {
+                const sem = document.getElementById('editSemester').value;
+                const year = document.getElementById('editYear').value;
+                try {
+                    await api.put(`/subjects/${currentRegId}`, { semester: sem, academic_year: year });
+                    showToast('Registration updated');
+                    document.getElementById('editModal').style.display = 'none';
+                    loadMySubjects();
+                } catch (e) { showToast(e.message, 'error'); }
+            });
+
+            const handleDelete = async (id) => {
+                if (!confirm('Are you sure you want to remove this registration?')) return;
+                try {
+                    await api.delete(`/subjects/${id}`);
+                    showToast('Registration removed');
+                    loadMySubjects();
+                } catch (e) { showToast(e.message, 'error'); }
+            };
+
+            loadMySubjects();
+        });
+    </script>
+</body>
+</html>
