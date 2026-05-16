@@ -3,6 +3,8 @@ const API_BASE_URL = window.location.origin.includes('localhost') || window.loca
     ? 'http://localhost:5000/api' 
     : 'https://ssit-backend.onrender.com/api';
 
+console.log('API Base URL:', API_BASE_URL);
+
 const api = {
     async request(endpoint, options = {}) {
         const token = localStorage.getItem('token');
@@ -34,6 +36,7 @@ const api = {
 
             return data;
         } catch (error) {
+            console.error('API Error:', error);
             throw error;
         }
     },
