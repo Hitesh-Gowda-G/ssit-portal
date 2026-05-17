@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (!window.location.pathname.endsWith('register-subjects.html')) return;
+    if (!window.location.pathname.includes('register-subjects')) return;
 
     const subjectsTable = document.querySelector('#subjectsTable tbody');
     const searchInput = document.getElementById('searchInput');

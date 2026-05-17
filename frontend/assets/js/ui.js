@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (!token && !window.location.pathname.endsWith('index.html') && !window.location.pathname.endsWith('register.html')) {
+    if (!token && !window.location.pathname.includes('index') && !window.location.pathname.includes('register')) {
         window.location.href = 'index.html';
     }
 

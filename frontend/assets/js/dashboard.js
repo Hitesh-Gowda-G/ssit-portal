@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    if (!window.location.pathname.endsWith('dashboard.html')) return;
+    if (!window.location.pathname.includes('dashboard')) return;
 
     try {
         const [registered, history] = await Promise.all([
