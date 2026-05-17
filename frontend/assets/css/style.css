@@ -334,6 +334,7 @@ tr:hover {
 @media (max-width: 1024px) {
     .sidebar {
         transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
     }
     .sidebar.open {
         transform: translateX(0);
@@ -341,6 +342,11 @@ tr:hover {
     .main-content {
         margin-left: 0;
         width: 100%;
+        padding: 1rem;
+    }
+    .top-nav {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
     }
 }
 
@@ -353,6 +359,23 @@ tr:hover {
 @media (max-width: 1024px) {
     .hamburger {
         display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .auth-card {
+        padding: 1.5rem;
+    }
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .controls-grid {
+        grid-template-columns: 1fr;
     }
 }
 

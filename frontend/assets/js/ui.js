@@ -18,8 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const hamburger = document.getElementById('hamburger');
     const sidebar = document.getElementById('sidebar');
     if (hamburger && sidebar) {
-        hamburger.addEventListener('click', () => {
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
             sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside on mobile screens
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024 && sidebar.classList.contains('open') && !sidebar.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
         });
     }
 

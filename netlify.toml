@@ -1,0 +1,6 @@
+[build]
+  publish = "frontend"
+  command = "echo 'Building static frontend...'"
+
+# To ensure proper routing if needed, but since it's a multi-page app, 
+# standard Netlify static hosting will serve HTML files directly.
