@@ -1,7 +1,7 @@
 // API Configuration
 const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
 // IMPORTANT: Replace this URL with your actual deployed backend URL (e.g., Render)
-const PRODUCTION_API_URL = 'https://ssit-backend.onrender.com/api'; 
+const PRODUCTION_API_URL = 'https://ssit-portal.onrender.com/api'; 
 
 const API_BASE_URL = IS_LOCAL ? 'http://localhost:5000/api' : PRODUCTION_API_URL;
 
