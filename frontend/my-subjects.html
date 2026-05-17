@@ -27,12 +27,33 @@
         <main class="main-content">
             <header class="top-nav">
                 <div class="hamburger" id="hamburger"><i class="fas fa-bars"></i></div>
-                <div class="page-title"><h2>My Registered Subjects</h2></div>
+                <div class="page-title" style="display: flex; align-items: center; gap: 1rem;">
+                    <h2>My Registered Subjects</h2>
+                    <button id="downloadPdfBtn" class="btn btn-primary btn-sm" style="background: var(--secondary); display: flex; align-items: center; gap: 0.5rem; width: auto; padding: 6px 12px;">
+                        <i class="fas fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
                 <div class="user-profile">
                     <div class="user-avatar" id="userAvatar">JD</div>
                     <div class="user-info"><span id="userName">John Doe</span></div>
                 </div>
             </header>
+
+            <!-- Print Header (Hidden on Screen) -->
+            <div id="printHeader" style="display: none;">
+                <h1 style="text-align: center; color: var(--primary);">SSIT Registration Portal</h1>
+                <h2 style="text-align: center; margin-bottom: 2rem;">Official Subject Registration Document</h2>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; border-bottom: 2px solid #eee; padding-bottom: 1rem;">
+                    <div>
+                        <p><strong>Student Name:</strong> <span id="printName"></span></p>
+                        <p><strong>Email:</strong> <span id="printEmail"></span></p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p><strong>USN:</strong> <span id="printUsn"></span></p>
+                        <p><strong>Date:</strong> <span id="printDate"></span></p>
+                    </div>
+                </div>
+            </div>
 
             <div class="card">
                 <div class="table-responsive">
@@ -168,6 +189,18 @@
             };
 
             loadMySubjects();
+
+            // Setup Print / Download PDF
+            document.getElementById('downloadPdfBtn').addEventListener('click', () => {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user) {
+                    document.getElementById('printName').textContent = user.name;
+                    document.getElementById('printEmail').textContent = user.email;
+                    document.getElementById('printUsn').textContent = user.usn;
+                    document.getElementById('printDate').textContent = new Date().toLocaleDateString();
+                }
+                window.print();
+            });
         });
     </script>
 </body>

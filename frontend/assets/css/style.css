@@ -400,3 +400,60 @@ tr:hover {
 
 .toast-success { border-left: 4px solid var(--success); }
 .toast-error { border-left: 4px solid var(--danger); }
+
+/* Print Layout */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 12pt;
+    }
+    
+    .sidebar,
+    .top-nav,
+    .toast,
+    #editModal,
+    .edit-btn,
+    .delete-btn,
+    #downloadPdfBtn,
+    thead th:last-child,
+    tbody td:last-child {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    #printHeader {
+        display: block !important;
+    }
+    
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 1rem !important;
+    }
+    
+    th, td {
+        border: 1px solid #ddd !important;
+        padding: 8px !important;
+        text-align: left !important;
+        color: #000000 !important;
+    }
+    
+    th {
+        background-color: #f2f2f2 !important;
+    }
+}
+
