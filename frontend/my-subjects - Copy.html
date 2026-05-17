@@ -89,7 +89,7 @@
     <script>
         // Inline script for simplicity or separate file
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.location.pathname.endsWith('my-subjects.html')) return;
+            if (!window.location.pathname.includes('my-subjects')) return;
             const tbody = document.querySelector('#mySubjectsTable tbody');
             
             const loadMySubjects = async () => {

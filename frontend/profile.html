@@ -66,7 +66,7 @@
     <script src="assets/js/ui.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.location.pathname.endsWith('profile.html')) return;
+            if (!window.location.pathname.includes('profile')) return;
             try {
                 const data = await api.get('/profile');
                 document.getElementById('profileName').textContent = data.name;

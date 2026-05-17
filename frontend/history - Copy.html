@@ -73,7 +73,7 @@
     <script src="assets/js/ui.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            if (!window.location.pathname.endsWith('history.html')) return;
+            if (!window.location.pathname.includes('history')) return;
             const tbody = document.querySelector('#historyTable tbody');
             const searchInput = document.getElementById('historySearch');
             const actionFilter = document.getElementById('actionFilter');
